@@ -1,0 +1,305 @@
+import "./form.css"
+import { useState } from "react";
+ 
+interface State {
+  id: number;
+  state: string;
+}
+ 
+interface City {
+  parentid: number;
+  cid: number;
+  city: string;
+}
+ 
+interface Area {
+  c_id: number;
+  aid: number;
+  area: string;
+}
+ 
+const StateList: State[] = [{ "id": 1, "state": "Gujarat" }, { "id": 2, "state": "Maharastra" }, { "id": 3, "state": "Rajasthan" }];
+ 
+const CityList: City[] = [{ "parentid": 1, "cid": 1, "city": "Ahmedabad" }, { "parentid": 1, "cid": 2, "city": "Surat" }, { "parentid": 2, "cid": 3, "city": "Mumbai" }, { "parentid": 2, "cid": 4, "city": "Pune" }, { "parentid": 3, "cid": 5, "city": "Jaipur" }, { "parentid": 3, "cid": 6, "city": "Jodhpur" }];
+ 
+const AreaList: Area[] = [{ "c_id": 1, "aid": 1, "area": "Nava Naroda" }, { "c_id": 1, "aid": 2, "area": "Chandkheda" }, { "c_id": 2, "aid": 3, "area": "Udhana" }, { "c_id": 2, "aid": 4, "area": "Varachha" }, { "c_id": 3, "aid": 5, "area": "Andheri" }, { "c_id": 3, "aid": 6, "area": "Bandra" }, { "c_id": 4, "aid": 7, "area": "Kharadi" }, { "c_id": 4, "aid": 8, "area": "Hadapsar" }, { "c_id": 5, "aid": 9, "area": "City Palace" }, { "c_id": 5, "aid": 10, "area": "Hawa Mahal" }, { "c_id": 6, "aid": 11, "area": "Osian" }, { "c_id": 6, "aid": 12, "area": "Mandore Garden" }]
+ 
+function Form2() {
+  const [name, setName] = useState<string>("");
+  const [age, setAge] = useState<string>("");
+  const [state, setState] = useState<string>("");
+  const [city, setCity] = useState<string>("");
+  const [area, setArea] = useState<string>("");
+  const [gender, setGender] = useState<string>("");
+  const [hobbies, setHobbies] = useState<string[]>([]);
+  const [tableData, setTableData] = useState<any[]>([]);
+  const [errorMessageName, setErrorMessageName] = useState<string>("");
+  const [errorMessageAge, setErrorMessageAge] = useState<string>("");
+  const [errorMessageState, setErrorMessageState] = useState<string>("");
+  const [errorMessageCity, setErrorMessageCity] = useState<string>("");
+  const [errorMessageArea, setErrorMessageArea] = useState<string>("");
+  const [errorMessageGender, setErrorMessageGender] = useState<string>("");
+  const [errorMessageHobbies, setErrorMessageHobbies] = useState<string>("");
+ 
+  const handleSubmit = (e: any) => {
+ 
+    e.preventDefault();
+    const errMessage = ["Name should not be empty!","Age should not be empty!","State should not be empty!","City should not be empty!","Area should not be empty!","Gender should not be empty!", "Hobbies should not be empty!"]
+    if (!name || !age || !state || !area || !city || !gender || hobbies.length === 0) {
+      setErrorMessageName("All fields are required.");
+      return;
+    }
+    if(!name){
+      setErrorMessageName("Name should not be empty!");
+      return;
+    }
+    if(!age){
+      setErrorMessageAge("Age should not be empty!");
+      return;
+    }
+    if(!state){
+      setErrorMessageState("State should not be empty!");
+      return;
+    }
+    if(!city){
+      setErrorMessageCity("City should not be empty!");
+      return;
+    }
+    if(!area){
+      setErrorMessageArea("Area should not be empty!");
+      return;
+    }
+    if(!gender){
+      setErrorMessageGender("Gender should not be empty!");
+      return;
+    }
+    if( hobbies.length === 0){
+      setErrorMessageHobbies("Hobbies should not be empty!");
+      return;
+    }
+   
+ 
+    const newData = {
+      name,
+      age,
+      state,
+      city,
+      area,
+      gender,
+      hobbies: hobbies.join(", ")
+    };
+ 
+    setTableData([...tableData, newData]);
+    setName("");
+    setAge("");
+    setState("");
+    setCity("");
+    setArea("");
+    setGender("");
+    setHobbies([]);
+    setErrorMessageName("");
+    setErrorMessageAge("");
+    setErrorMessageState("");
+    setErrorMessageCity("");
+ 
+    // $("#reset").attr("disabled", "false");
+  };
+ 
+  const handleEdit = (index: number) => {
+    $("#reset").attr("disabled", "true");
+    const data = tableData[index];
+    setName(data.name);
+    setAge(data.age);
+    setState(data.state);
+    setCity(data.city);
+    setArea(data.area);
+    setGender(data.gender);
+    setHobbies(data.hobbies.split(", "));
+    setTableData(tableData.filter((_, i) => i !== index));
+  };
+ 
+  const handleDelete = (index: number) => {
+    if(confirm("Are you sur, you want to delete this row?")){
+      setTableData(tableData.filter((_, i) => i !== index));
+    }
+    
+  };
+ 
+  const handleReset = () => {
+    setName("");
+    setAge("");
+    setState("");
+    setCity("");
+    setArea("");
+    setGender("");
+    setHobbies([]);
+    // setErrorMessage("");
+  };
+ 
+  return (
+    <div className="container">
+      <div className="text-center">
+        <form onSubmit={handleSubmit} className="fw-bold fs-5">
+          <div>
+            <label className="left">Name</label>
+            <input
+              className="in"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              // errorMessage=""
+            />
+          </div>
+          <div>
+            <label className="left">Age</label>
+            <input
+              className="in"
+              type="number"
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="left">State</label>
+            <select className="in" value={state} onChange={(e) => setState(e.target.value)}>
+              <option value="">Select a state</option>
+              {StateList.map((state) => (
+                <option key={state.id} value={state.state}>
+                  {state.state}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="left">City</label>
+            <select className="in" value={city} onChange={(e) => setCity(e.target.value)}>
+              <option value="">Select a city</option>
+              {CityList.filter(
+                (c) => c.parentid === StateList.find((s) => s.state === state)?.id
+              ).map((city) => (
+                <option key={city.cid} value={city.city}>
+                  {city.city}
+                </option>
+              ))}
+            </select>
+          </div>
+ 
+          <div>
+            <label className="left">Area</label>
+            <select className="in" value={area} onChange={(e) => setArea(e.target.value)}>
+              <option value="">Select a area</option>
+              {AreaList.filter(
+                (c) => c.c_id === CityList.find((s) => s.city === city)?.cid
+              ).map((area) => (
+                <option key={area.aid} value={area.area}>
+                  {area.area}
+                </option>
+              ))}
+            </select>
+          </div>
+ 
+          <div>
+            <label className="left">Gender</label>
+ 
+            <label>
+              <input
+                type="radio"
+                value="male"
+                checked={gender === "male"}
+                onChange={(e) => setGender(e.target.value)}
+              />
+              Male
+            </label>
+            <label>
+              <input
+                type="radio"
+                value="female"
+                checked={gender === "female"}
+                onChange={(e) => setGender(e.target.value)}
+              />
+              Female
+            </label>
+ 
+ 
+          </div>
+          <div>
+            <label className="left">Hobbies</label>
+            <label>
+              <input
+                type="checkbox"
+                value="reading"
+                checked={hobbies.includes("reading")}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setHobbies([...hobbies, e.target.value]);
+                  } else {
+                    setHobbies(
+                      hobbies.filter((hobby) => hobby !== e.target.value)
+                    );
+                  }
+                }}
+              />
+              Reading
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                value="gaming"
+                checked={hobbies.includes("gaming")}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setHobbies([...hobbies, e.target.value]);
+                  } else {
+                    setHobbies(
+                      hobbies.filter((hobby) => hobby !== e.target.value)
+                    );
+                  }
+                }}
+              />
+              Gaming
+            </label>
+          </div>
+          <button type="submit" className="btn btn-primary mx-4">Submit</button>
+          <button type="button" className="btn btn-success mx-4" onClick={handleReset} disabled={false} id="reset">
+            Reset
+          </button>
+        </form>
+      </div>
+ 
+      {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
+      <table className="table table-striped mt-4">
+        <thead>
+          <tr className="mx-2 fs-4">
+            <th>Name</th>
+            <th>Age</th>
+            <th>State</th>
+            <th>City</th>
+            <th>Area</th>
+            <th>Gender</th>
+            <th>Hobbies</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tableData.map((data, index) => (
+            <tr key={index} className="fs-5">
+              <td className="px-2">{data.name}</td>
+              <td className="px-2">{data.age}</td>
+              <td className="px-2">{data.state}</td>
+              <td className="px-2">{data.city}</td>
+              <td className="px-2">{data.area}</td>
+              <td className="px-2">{data.gender}</td>
+              <td className="px-2">{data.hobbies}</td>
+              <td>
+                <button className="btn btn-primary mx-4" onClick={() => handleEdit(index)}>Edit</button>
+                <button className="btn btn-danger mx-4" onClick={() => handleDelete(index)}>Delete</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+ 
+export default Form2;
